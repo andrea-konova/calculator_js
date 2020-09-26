@@ -30,13 +30,20 @@ class Calculator {
     this.currentOperand = '';
   }
 
+  calculateRoot(root) {
+    console.log(rootButton.innerText);
+    this.previousOperandText.innerText =
+        `${this.previousOperand} ${rootButton.innerText}`;
+    this.previousOperandText.innerText = rootButton.innerText;
+  }
+
   calculate() {
     let computation;
     const prev = parseFloat(this.previousOperand),
       current = parseFloat(this.currentOperand);
 
     if (isNaN(prev) || isNaN(current)) return;
-
+    
     switch (this.operation) {
       case '+':
         computation = prev + current;
@@ -101,6 +108,7 @@ const numbersButtons = document.querySelectorAll('[data-number]'),
   operationSqrt = document.querySelector('[data-operation-sqrt]'),
   equalsButton = document.querySelector('[data-equals]'),
   deleteButton = document.querySelector('[data-delete]'),
+  rootButton = document.querySelector('[data-root]'),
   allClearButton = document.querySelector('[data-all-clear]'),
   previousOperandText = document.querySelector('[data-previous-operand]'),
   currentOperandText = document.querySelector('[data-current-operand]');
@@ -119,6 +127,10 @@ operationButtons.forEach(button => {
     calculator.chooseOperation(button.innerText);
     calculator.updateDisplay();
   })
+})
+
+rootButton.addEventListener('click', () => {
+  calculator.calculateRoot(rootButton.innerText)
 })
 
 equalsButton.addEventListener('click', button => {
