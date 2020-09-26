@@ -50,6 +50,12 @@ class Calculator {
       case '÷':
         computation = prev / current;
         break;
+      case '^':
+        computation = prev ** current;
+        break;
+      case '√':
+        computation = Math.sqrt(prev);
+        break;
       default:
         return;
     }
@@ -91,7 +97,9 @@ class Calculator {
 }
 
 const numbersButtons = document.querySelectorAll('[data-number]'),
-  operationButtons = document.querySelectorAll('[data-operation]'), equalsButton = document.querySelector('[data-equals]'),
+  operationButtons = document.querySelectorAll('[data-operation]'), 
+  operationSqrt = document.querySelector('[data-operation-sqrt]'),
+  equalsButton = document.querySelector('[data-equals]'),
   deleteButton = document.querySelector('[data-delete]'),
   allClearButton = document.querySelector('[data-all-clear]'),
   previousOperandText = document.querySelector('[data-previous-operand]'),

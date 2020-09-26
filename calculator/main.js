@@ -100,10 +100,9 @@ const calculator = new Calculator(previousOperandTextElement, currentOperandText
 
 numberButtons.forEach(button => {
   button.addEventListener("click", () => {
-
-      if(calculator.previousOperand === "" &&
-      calculator.currentOperand !== "" &&
-  calculator.readyToReset) {
+     if(calculator.previousOperand === "" &&
+        calculator.currentOperand !== "" &&
+        calculator.readyToReset) {
           calculator.currentOperand = "";
           calculator.readyToReset = false;
       }
