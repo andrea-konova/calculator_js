@@ -2,17 +2,20 @@ class Calculator {
   constructor(previousOperandText, currentOperandText) {
     this.previousOperandText = previousOperandText;
     this.currentOperandText = currentOperandText;
-    this.clear();
+    this.readyForReset = false;
+    this.currentOperand = 0;
+    this.updateDisplay();
   }
 
   clear() {
     this.previousOperand  = '';
-    this.currentOperand  = '';
+    this.currentOperand  = 0;
     this.operation = undefined;
   }
 
   delete() {
     this.currentOperand = this.currentOperand.toString().slice(0, -1);
+    if (this.currentOperand === '') this.currentOperand = 0;
   }
 
   appendNumber(number) {
@@ -30,11 +33,18 @@ class Calculator {
     this.currentOperand = '';
   }
 
-  calculateRoot(root) {
-    console.log(rootButton.innerText);
-    this.previousOperandText.innerText =
-        `${this.previousOperand} ${rootButton.innerText}`;
-    this.previousOperandText.innerText = rootButton.innerText;
+  countRoot() {
+    if (this.currentOperand < 0) {
+      this.currentOperand = 0;
+      alert("Error: extracting the square root of a negative number is impossible")
+      return;
+    }
+    this.currentOperand = Math.sqrt(this.currentOperand).toString().slice(0,20);
+    this.readyForReset = 1;
+  }
+
+  changeSign() {
+    this.currentOperand *= -1;
   }
 
   calculate() {
@@ -46,30 +56,28 @@ class Calculator {
     
     switch (this.operation) {
       case '+':
-        computation = prev + current;
+        computation = (prev*10 + current*10)/10;
         break;
       case '-':
-        computation = prev - current;
+        computation = (prev*10 - current*10)/10;
         break;
       case '*':
-        computation = prev * current;
+        computation = (prev*10 * current*10)/100;
         break;
       case '÷':
-        computation = prev / current;
+        computation = (prev*10 / current*10)/100;
         break;
       case '^':
-        computation = prev ** current;
-        break;
-      case '√':
-        computation = Math.sqrt(prev);
+        computation = Math.pow(prev, current);
         break;
       default:
         return;
     }
 
-    this.currentOperand = computation;
+    this.currentOperand = computation.toString().slice(0,20);
     this.operation = undefined;
     this.previousOperand = '';
+    this.readyForReset = true;
   }
 
   getDisplayNumber(number) {
@@ -95,7 +103,7 @@ class Calculator {
       this.getDisplayNumber(this.currentOperand);
     if (this.operation != null) {
       this.previousOperandText.innerText =
-        `${this.previousOperand} ${this.operation}`;
+        `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
     } else {
       this.previousOperandText.innerText = '';
     }
@@ -109,6 +117,7 @@ const numbersButtons = document.querySelectorAll('[data-number]'),
   equalsButton = document.querySelector('[data-equals]'),
   deleteButton = document.querySelector('[data-delete]'),
   rootButton = document.querySelector('[data-root]'),
+  changeSignButton = document.querySelector('[data-change-sign]'),
   allClearButton = document.querySelector('[data-all-clear]'),
   previousOperandText = document.querySelector('[data-previous-operand]'),
   currentOperandText = document.querySelector('[data-current-operand]');
@@ -117,8 +126,12 @@ const calculator = new Calculator(previousOperandText, currentOperandText)
 
 numbersButtons.forEach(button => {
   button.addEventListener('click', () => {
+    if (calculator.readyForReset) {
+      calculator.currentOperand = "";
+    }
     calculator.appendNumber(button.innerText);
     calculator.updateDisplay();
+    calculator.readyForReset = false;
   })
 })
 
@@ -130,20 +143,26 @@ operationButtons.forEach(button => {
 })
 
 rootButton.addEventListener('click', () => {
-  calculator.calculateRoot(rootButton.innerText)
+  calculator.countRoot();
+  calculator.updateDisplay();
 })
 
-equalsButton.addEventListener('click', button => {
+equalsButton.addEventListener('click', () => {
   calculator.calculate();
   calculator.updateDisplay();
 })
 
-allClearButton.addEventListener('click', button => {
+changeSignButton.addEventListener('click', () => {
+  calculator.changeSign();
+  calculator.updateDisplay();
+})
+
+allClearButton.addEventListener('click', () => {
   calculator.clear();
   calculator.updateDisplay();
 })
 
-deleteButton.addEventListener('click', button => {
+deleteButton.addEventListener('click', () => {
   calculator.delete();
   calculator.updateDisplay();
 })
